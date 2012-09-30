@@ -103,7 +103,9 @@
 {
 	[super layoutSubviews];
 
-	self.backView.frame = self.contentView.frame;
+    CGRect rect = self.frame;
+    rect.origin = CGPointZero;
+    self.backView.frame = rect;
 }
 
 #pragma mark - Accessors
@@ -143,6 +145,8 @@
 
     [self addSubview:backView];
     [self sendSubviewToBack:self.backView];
+
+    [self setNeedsLayout];
 }
 
 - (BOOL)_shouldReveal
