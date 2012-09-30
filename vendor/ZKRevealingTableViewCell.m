@@ -61,10 +61,6 @@
 @synthesize _lastDirection;
 @synthesize _currentDirection;
 
-#pragma mark - Public Properties
-
-@dynamic revealing;
-
 #pragma mark - Lifecycle
 
 - (void)commonInit
@@ -133,10 +129,8 @@
 
 - (void)_setRevealing:(BOOL)revealing
 {
-	[self willChangeValueForKey:@"isRevealing"];
-	objc_setAssociatedObject(self, &BOOLRevealing, [NSNumber numberWithBool:revealing], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-	[self didChangeValueForKey:@"isRevealing"];
-	
+    _revealing = revealing;
+
 	if (self.isRevealing && [self.delegate respondsToSelector:@selector(cellDidReveal:)])
 		[self.delegate cellDidReveal:self];
 }
