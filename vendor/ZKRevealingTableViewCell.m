@@ -368,11 +368,10 @@
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
 	if (gestureRecognizer == self._panGesture) {
-		UIScrollView *superview = (UIScrollView *)self.superview;
-		CGPoint translation = [(UIPanGestureRecognizer *)gestureRecognizer translationInView:superview];
+        CGPoint translation = [(UIPanGestureRecognizer *)gestureRecognizer translationInView:self.superview];
 		
 		// Make sure it is scrolling horizontally
-		return ((fabs(translation.x) / fabs(translation.y) > 1) ? YES : NO && (superview.contentOffset.y == 0.0 && superview.contentOffset.x == 0.0));
+		return ((fabs(translation.x) / fabs(translation.y) > 1) ? YES : NO);
 	}
 	return NO;
 }
