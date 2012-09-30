@@ -139,6 +139,16 @@
 	return (![self.delegate respondsToSelector:@selector(cellShouldReveal:)] || [self.delegate cellShouldReveal:self]);
 }
 
+#pragma mark - Handling the background view
+- (void)syncBackgroundViewWithContentView
+{
+    CGPoint center = self.contentView.center;
+    CGFloat dx = self._originalCenter - center.x;
+    CGRect rect = self.backgroundView.frame;
+    rect.origin.x = -dx;
+    self.backgroundView.frame = rect;
+}
+
 #pragma mark - Handing Touch
 
 - (void)_pan:(UIPanGestureRecognizer *)recognizer
@@ -193,8 +203,9 @@
 		
 		CGPoint center = self.contentView.center;
 		center.x = newCenterPosition;
-		
+
 		self.contentView.center = center;
+        [self syncBackgroundViewWithContentView];
 
 	} else if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
 				
@@ -296,17 +307,22 @@
 						options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction 
 					 animations:^{
                          self.contentView.center = CGPointMake(self._originalCenter, self.contentView.center.y);
+                         [self syncBackgroundViewWithContentView];
                      }
 					 completion:^(BOOL f) {
-						 						 
-						 [UIView animateWithDuration:0.1 delay:0 
+						 [UIView animateWithDuration:0.1 delay:0
 											 options:UIViewAnimationCurveEaseOut
-										  animations:^{ self.contentView.frame = CGRectOffset(self.contentView.frame, bounceDistance, 0); } 
+										  animations:^{
+                                              self.contentView.frame = CGRectOffset(self.contentView.frame, bounceDistance, 0);
+                                              [self syncBackgroundViewWithContentView];
+                                          }
 										  completion:^(BOOL f) {                     
-											  
-												  [UIView animateWithDuration:0.1 delay:0 
+												  [UIView animateWithDuration:0.1 delay:0
 																	  options:UIViewAnimationCurveEaseIn
-																   animations:^{ self.contentView.frame = CGRectOffset(self.contentView.frame, -bounceDistance, 0); } 
+																   animations:^{
+                                                                       self.contentView.frame = CGRectOffset(self.contentView.frame, -bounceDistance, 0);
+                                                                       [self syncBackgroundViewWithContentView];
+                                                                   }
 																   completion:NULL];
 										  }
 						  ]; 
