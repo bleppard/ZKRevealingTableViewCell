@@ -44,6 +44,7 @@
 	// Do any additional setup after loading the view, typically from a nib.
 	self.objects = [NSArray arrayWithObjects:@"Right", @"Left", @"Both", @"None", nil];
 	self.tableView = (UITableView *)self.view;
+    self.tableView.backgroundColor = [UIColor clearColor];
 	self.tableView.rowHeight      = 52.0f;
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
 }
@@ -135,8 +136,12 @@
 		cell = [[ZKRevealingTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
 		cell.delegate       = self;
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
-		
-		cell.backView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+
+        cell.backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
+
+        cell.backView = [[UIView alloc] initWithFrame:CGRectZero];
+        cell.backView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+
         cell.pixelsToReveal = 40;
 	}
 	
@@ -165,9 +170,9 @@
 {
 	NSUInteger row = [indexPath row];
 	if (row % 2 == 0) {
-		cell.backgroundColor = [UIColor whiteColor];
+		cell.backgroundView.backgroundColor = [UIColor whiteColor];
 	} else {
-		cell.backgroundColor = [UIColor colorWithRed:0.892 green:0.893 blue:0.892 alpha:1.0];
+		cell.backgroundView.backgroundColor = [UIColor colorWithRed:0.892 green:0.893 blue:0.892 alpha:1.0];
 	}
 	
 //	cell.contentView.backgroundColor = cell.backgroundColor;
