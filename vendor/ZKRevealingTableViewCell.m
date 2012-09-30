@@ -79,6 +79,8 @@
     UIView *backgroundView = [[UIView alloc] initWithFrame:self.contentView.frame];
     backgroundView.backgroundColor = [UIColor clearColor];
     self.backView = backgroundView;
+    [self addSubview:self.backView];
+    [self sendSubviewToBack:self.backView];
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -102,9 +104,7 @@
 - (void)layoutSubviews
 {
 	[super layoutSubviews];
-	
-	[self addSubview:self.backView];
-	[self addSubview:self.contentView];
+
 	self.backView.frame = self.contentView.frame;
 }
 
