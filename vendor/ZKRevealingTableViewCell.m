@@ -252,12 +252,12 @@
 
 - (BOOL)_shouldDragLeft
 {
-	return (self.direction == ZKRevealingTableViewCellDirectionBoth || self.direction == ZKRevealingTableViewCellDirectionLeft);
+	return (self.direction & ZKRevealingTableViewCellDirectionLeft) != 0;
 }
 
 - (BOOL)_shouldDragRight
 {
-	return (self.direction == ZKRevealingTableViewCellDirectionBoth || self.direction == ZKRevealingTableViewCellDirectionRight);
+	return (self.direction & ZKRevealingTableViewCellDirectionRight) != 0;
 }
 
 - (CGFloat)_originalCenter

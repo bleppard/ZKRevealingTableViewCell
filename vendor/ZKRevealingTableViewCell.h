@@ -29,10 +29,10 @@
 @class ZKRevealingTableViewCell;
 
 typedef enum {
-	ZKRevealingTableViewCellDirectionRight = 0,
-	ZKRevealingTableViewCellDirectionLeft,
-	ZKRevealingTableViewCellDirectionBoth,
-	ZKRevealingTableViewCellDirectionNone,
+	ZKRevealingTableViewCellDirectionNone  = 0,
+	ZKRevealingTableViewCellDirectionRight = 0x1,
+	ZKRevealingTableViewCellDirectionLeft  = 0x2,
+	ZKRevealingTableViewCellDirectionBoth  = ZKRevealingTableViewCellDirectionLeft | ZKRevealingTableViewCellDirectionRight
 } ZKRevealingTableViewCellDirection;
 
 @protocol ZKRevealingTableViewCellDelegate <NSObject>

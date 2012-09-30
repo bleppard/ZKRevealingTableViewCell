@@ -141,7 +141,20 @@
 	}
 	
 	cell.textLabel.text = [self.objects objectAtIndex:indexPath.row];
-	cell.direction      = (ZKRevealingTableViewCellDirection)indexPath.row;
+    switch (indexPath.row) {
+        case 0:
+            cell.direction = ZKRevealingTableViewCellDirectionRight;
+            break;
+        case 1:
+            cell.direction = ZKRevealingTableViewCellDirectionLeft;
+            break;
+        case 2:
+            cell.direction = ZKRevealingTableViewCellDirectionBoth;
+            break;
+        case 3:
+            cell.direction = ZKRevealingTableViewCellDirectionNone;
+            break;
+    }
 	cell.shouldBounce   = (BOOL)!indexPath.section;
 	
 	return cell;
