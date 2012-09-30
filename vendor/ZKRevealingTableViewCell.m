@@ -113,15 +113,6 @@
 }
 
 #pragma mark - Accessors
-#import <objc/runtime.h>
-
-static char BOOLRevealing;
-
-- (BOOL)isRevealing
-{
-	return [(NSNumber *)objc_getAssociatedObject(self, &BOOLRevealing) boolValue];
-}
-
 - (void)setRevealing:(BOOL)revealing
 {
 	// Don't change the value if its already that value.
@@ -169,14 +160,13 @@ static char BOOLRevealing;
 	CGFloat currentTouchPositionX = currentTouchPoint.x;
 	CGFloat panAmount             = self._initialTouchPositionX - currentTouchPositionX;
 	CGFloat newCenterPosition     = self._initialHorizontalCenter - panAmount;
-	CGFloat centerX               = self.contentView.center.x;
 	
 	if (recognizer.state == UIGestureRecognizerStateBegan) {
 		
 		// Set a baseline for the panning
 		self._initialTouchPositionX = currentTouchPositionX;
 		self._initialHorizontalCenter = self.contentView.center.x;
-		
+
 		if ([self.delegate respondsToSelector:@selector(cellDidBeginPan:)])
 			[self.delegate cellDidBeginPan:self];
 		
@@ -184,7 +174,7 @@ static char BOOLRevealing;
 	} else if (recognizer.state == UIGestureRecognizerStateChanged) {
 		
 		// If the pan amount is negative, then the last direction is left, and vice versa.
-		if (newCenterPosition - centerX < 0)
+		if (newCenterPosition - self.contentView.center.x < 0)
 			self._lastDirection = ZKRevealingTableViewCellDirectionLeft;
 		else
 			self._lastDirection = ZKRevealingTableViewCellDirectionRight;
@@ -212,8 +202,8 @@ static char BOOLRevealing;
 		CGPoint center = self.contentView.center;
 		center.x = newCenterPosition;
 		
-		self.contentView.layer.position = center;
-		
+		self.contentView.center = center;
+
 	} else if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
 				
 		// Swiping left, velocity is below 0.
@@ -278,7 +268,7 @@ static char BOOLRevealing;
 
 - (CGFloat)_originalCenter
 {
-	return ceil(self.bounds.size.width / 2);
+	return self.contentView.bounds.size.width / 2;
 }
 
 - (CGFloat)_bounceMultiplier
@@ -292,7 +282,7 @@ static char BOOLRevealing;
 - (void)_slideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction offsetMultiplier:(CGFloat)multiplier
 {
 	CGFloat bounceDistance;
-	
+
 	if (self.contentView.center.x == self._originalCenter)
 		return;
 	
@@ -312,7 +302,9 @@ static char BOOLRevealing;
 	[UIView animateWithDuration:0.1
 						  delay:0 
 						options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction 
-					 animations:^{ self.contentView.center = CGPointMake(self._originalCenter, self.contentView.center.y); } 
+					 animations:^{
+                         self.contentView.center = CGPointMake(self._originalCenter, self.contentView.center.y);
+                     }
 					 completion:^(BOOL f) {
 						 						 
 						 [UIView animateWithDuration:0.1 delay:0 
@@ -373,7 +365,7 @@ static char BOOLRevealing;
 	[UIView animateWithDuration:0.2 
 						  delay:0 
 						options:UIViewAnimationOptionCurveEaseOut 
-					 animations:^{ self.contentView.center = CGPointMake(x, self.contentView.center.y); } 
+					 animations:^{ self.contentView.center = CGPointMake(x, self.contentView.center.y); }
 					 completion:NULL];
 }
 
