@@ -67,24 +67,29 @@
 
 #pragma mark - Lifecycle
 
+- (void)commonInit
+{
+    self.direction = ZKRevealingTableViewCellDirectionBoth;
+    self.shouldBounce = YES;
+    self.pixelsToReveal = 0;
+
+    self._panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_pan:)];
+    self._panGesture.delegate = self;
+
+    [self addGestureRecognizer:self._panGesture];
+
+    self.contentView.backgroundColor = [UIColor clearColor];
+
+    UIView *backgroundView = [[UIView alloc] initWithFrame:self.contentView.frame];
+    backgroundView.backgroundColor = [UIColor clearColor];
+    self.backView = backgroundView;
+}
+
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.direction = ZKRevealingTableViewCellDirectionBoth;
-		self.shouldBounce = YES;
-		self.pixelsToReveal = 0;
-		
-		self._panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_pan:)];
-		self._panGesture.delegate = self;
-		
-		[self addGestureRecognizer:self._panGesture];
-		
-		self.contentView.backgroundColor = [UIColor clearColor];
-		
-		UIView *backgroundView         = [[UIView alloc] initWithFrame:self.contentView.frame];
-		backgroundView.backgroundColor = [UIColor clearColor];
-		self.backView                  = backgroundView;
+        [self commonInit];
     }
     return self;
 }
@@ -93,20 +98,7 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        self.direction = ZKRevealingTableViewCellDirectionBoth;
-		self.shouldBounce = YES;
-		self.pixelsToReveal = 0;
-		
-		self._panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_pan:)];
-		self._panGesture.delegate = self;
-		
-		[self addGestureRecognizer:self._panGesture];
-		
-		self.contentView.backgroundColor = [UIColor clearColor];
-		
-		UIView *backgroundView         = [[UIView alloc] initWithFrame:self.contentView.frame];
-		backgroundView.backgroundColor = [UIColor clearColor];
-		self.backView                  = backgroundView;
+        [self commonInit];
     }
     return self;
 }
