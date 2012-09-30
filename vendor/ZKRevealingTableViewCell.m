@@ -25,7 +25,6 @@
 //  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import "ZKRevealingTableViewCell.h"
-#import <QuartzCore/QuartzCore.h>
 
 @interface ZKRevealingTableViewCell ()
 
