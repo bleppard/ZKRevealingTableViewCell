@@ -133,6 +133,18 @@
 		[self.delegate cellDidReveal:self];
 }
 
+- (void)setBackView:(UIView *)backView
+{
+    if (backView == _backView) {
+        return;
+    }
+
+    _backView = backView;
+
+    [self addSubview:backView];
+    [self sendSubviewToBack:self.backView];
+}
+
 - (BOOL)_shouldReveal
 {
 	// Conditions are checked in order
