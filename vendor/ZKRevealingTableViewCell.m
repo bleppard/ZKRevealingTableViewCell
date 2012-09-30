@@ -369,7 +369,27 @@
 {
 	if (gestureRecognizer == self._panGesture) {
         CGPoint translation = [(UIPanGestureRecognizer *)gestureRecognizer translationInView:self.superview];
-		
+
+        ZKRevealingTableViewCellDirection panDirection = ZKRevealingTableViewCellDirectionNone;
+        if (translation.x < 0) {
+            panDirection = ZKRevealingTableViewCellDirectionLeft;
+        }
+        else if (translation.x > 0) {
+            panDirection = ZKRevealingTableViewCellDirectionRight;
+        }
+
+        if (self.isRevealing) {
+            // If currently revealed, only allow a pan in the opposite direction.
+            if (self._lastDirection == panDirection) {
+                return NO;
+            }
+        } else {
+            // Otherwise only allow a pan in one of the designated directions.
+            if (!(self.direction & panDirection)) {
+                return NO;
+            }
+        }
+
 		// Make sure it is scrolling horizontally
 		return ((fabs(translation.x) / fabs(translation.y) > 1) ? YES : NO);
 	}
