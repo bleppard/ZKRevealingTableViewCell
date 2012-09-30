@@ -255,6 +255,7 @@
 		FA897099154D9DC000526E2C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ZKRevealingTableViewCell/ZKRevealingTableViewCell-Prefix.pch";
 				INFOPLIST_FILE = "ZKRevealingTableViewCell/ZKRevealingTableViewCell-Info.plist";
@@ -267,6 +268,7 @@
 		FA89709A154D9DC000526E2C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ZKRevealingTableViewCell/ZKRevealingTableViewCell-Prefix.pch";
 				INFOPLIST_FILE = "ZKRevealingTableViewCell/ZKRevealingTableViewCell-Info.plist";

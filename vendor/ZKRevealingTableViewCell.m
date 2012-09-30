@@ -29,7 +29,7 @@
 
 @interface ZKRevealingTableViewCell ()
 
-@property (nonatomic, retain) UIPanGestureRecognizer   *_panGesture;
+@property (nonatomic, strong) UIPanGestureRecognizer   *_panGesture;
 @property (nonatomic, assign) CGFloat _initialTouchPositionX;
 @property (nonatomic, assign) CGFloat _initialHorizontalCenter;
 @property (nonatomic, assign) ZKRevealingTableViewCellDirection _lastDirection;
@@ -80,14 +80,14 @@
 		self.shouldBounce = YES;
 		self.pixelsToReveal = 0;
 		
-		self._panGesture = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_pan:)] autorelease];
+		self._panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_pan:)];
 		self._panGesture.delegate = self;
 		
 		[self addGestureRecognizer:self._panGesture];
 		
 		self.contentView.backgroundColor = [UIColor clearColor];
 		
-		UIView *backgroundView         = [[[UIView alloc] initWithFrame:self.contentView.frame] autorelease];
+		UIView *backgroundView         = [[UIView alloc] initWithFrame:self.contentView.frame];
 		backgroundView.backgroundColor = [UIColor clearColor];
 		self.backView                  = backgroundView;
     }
@@ -102,25 +102,18 @@
 		self.shouldBounce = YES;
 		self.pixelsToReveal = 0;
 		
-		self._panGesture = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_pan:)] autorelease];
+		self._panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_pan:)];
 		self._panGesture.delegate = self;
 		
 		[self addGestureRecognizer:self._panGesture];
 		
 		self.contentView.backgroundColor = [UIColor clearColor];
 		
-		UIView *backgroundView         = [[[UIView alloc] initWithFrame:self.contentView.frame] autorelease];
+		UIView *backgroundView         = [[UIView alloc] initWithFrame:self.contentView.frame];
 		backgroundView.backgroundColor = [UIColor clearColor];
 		self.backView                  = backgroundView;
     }
     return self;
-}
-
-- (void)dealloc
-{
-	self._panGesture = nil;
-	self.backView    = nil;
-	[super dealloc];
 }
 
 - (void)layoutSubviews

@@ -30,7 +30,7 @@
 @interface ZKRevealingTableViewController () {
 	ZKRevealingTableViewCell *_currentlyRevealedCell;
 }
-@property (nonatomic, retain) NSArray *objects;
+@property (nonatomic, strong) NSArray *objects;
 @end
 
 @implementation ZKRevealingTableViewController
@@ -73,11 +73,9 @@
 	
 	[_currentlyRevealedCell setRevealing:NO];
 	
-	if (_currentlyRevealedCell)
-		[_currentlyRevealedCell autorelease];
 	
 	[self willChangeValueForKey:@"currentlyRevealedCell"];
-	_currentlyRevealedCell = [currentlyRevealedCell retain];
+	_currentlyRevealedCell = currentlyRevealedCell;
 	[self didChangeValueForKey:@"currentlyRevealedCell"];
 }
 
@@ -130,7 +128,7 @@
 	ZKRevealingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
 	
 	if (!cell) {
-		cell = [[[ZKRevealingTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"] autorelease];
+		cell = [[ZKRevealingTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
 		cell.delegate       = self;
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		
