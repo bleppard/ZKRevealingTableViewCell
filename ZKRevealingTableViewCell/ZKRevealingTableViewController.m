@@ -107,6 +107,10 @@
 }
 
 #pragma mark - UITableViewDataSource
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    return @[ @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9" ];
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -133,6 +137,7 @@
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		
 		cell.backView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+        cell.pixelsToReveal = 40;
 	}
 	
 	cell.textLabel.text = [self.objects objectAtIndex:indexPath.row];
