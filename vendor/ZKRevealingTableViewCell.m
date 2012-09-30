@@ -64,11 +64,6 @@
 #pragma mark - Public Properties
 
 @dynamic revealing;
-@synthesize direction    = _direction;
-@synthesize delegate     = _delegate;
-@synthesize shouldBounce = _shouldBounce;
-@synthesize pixelsToReveal = _pixelsToReveal;
-@synthesize backView     = _backView;
 
 #pragma mark - Lifecycle
 
