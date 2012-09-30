@@ -72,12 +72,6 @@
     self._panGesture.delegate = self;
 
     [self addGestureRecognizer:self._panGesture];
-
-    UIView *backgroundView = [[UIView alloc] initWithFrame:self.contentView.frame];
-    backgroundView.backgroundColor = [UIColor clearColor];
-    self.backView = backgroundView;
-    [self addSubview:self.backView];
-    [self sendSubviewToBack:self.backView];
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -104,7 +98,7 @@
 
     CGRect rect = self.frame;
     rect.origin = CGPointZero;
-    self.backView.frame = rect;
+    self.revealedView.frame = rect;
 }
 
 #pragma mark - Accessors
@@ -134,16 +128,16 @@
 		[self.delegate cellDidReveal:self];
 }
 
-- (void)setBackView:(UIView *)backView
+- (void)setRevealedView:(UIView *)revealedView
 {
-    if (backView == _backView) {
+    if (revealedView == _revealedView) {
         return;
     }
 
-    _backView = backView;
+    _revealedView = revealedView;
 
-    [self addSubview:backView];
-    [self sendSubviewToBack:self.backView];
+    [self addSubview:revealedView];
+    [self sendSubviewToBack:revealedView];
 
     [self setNeedsLayout];
 }

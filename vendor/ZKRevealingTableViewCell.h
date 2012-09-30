@@ -46,7 +46,7 @@ typedef enum {
 
 @interface ZKRevealingTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) IBOutlet UIView *backView;
+@property (nonatomic, strong) IBOutlet UIView *revealedView;
 @property (nonatomic, assign, getter = isRevealing) BOOL revealing;
 @property (nonatomic, weak) id <ZKRevealingTableViewCellDelegate> delegate;
 @property (nonatomic, assign) ZKRevealingTableViewCellDirection direction;

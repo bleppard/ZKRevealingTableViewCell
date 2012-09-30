@@ -139,8 +139,8 @@
 
         cell.backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
 
-        cell.backView = [[UIView alloc] initWithFrame:CGRectZero];
-        cell.backView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+        cell.revealedView = [[UIView alloc] initWithFrame:CGRectZero];
+        cell.revealedView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
 
         cell.pixelsToReveal = 40;
 	}
