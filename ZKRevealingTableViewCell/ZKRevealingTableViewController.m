@@ -67,11 +67,7 @@
 		return;
 	
 	[_currentlyRevealedCell setRevealing:NO];
-	
-	
-	[self willChangeValueForKey:@"currentlyRevealedCell"];
 	_currentlyRevealedCell = currentlyRevealedCell;
-	[self didChangeValueForKey:@"currentlyRevealedCell"];
 }
 
 #pragma mark - ZKRevealingTableViewCellDelegate
