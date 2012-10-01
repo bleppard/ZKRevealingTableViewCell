@@ -35,6 +35,8 @@
 @property (nonatomic, assign) ZKRevealingTableViewCellDirection _lastDirection;
 @property (nonatomic, assign) ZKRevealingTableViewCellDirection _currentDirection;
 @property (nonatomic, assign) UITableViewCellSelectionStyle originalSelectionStyle;
+@property (nonatomic, strong) UIView *horizontalShadowView;
+@property (nonatomic, strong) UIView *verticalShadowView;
 
 - (void)_slideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction offsetMultiplier:(CGFloat)multiplier emitSnapBack:(BOOL)emitSnapBack;
 - (void)_slideOutContentViewInDirection:(ZKRevealingTableViewCellDirection)direction;
@@ -107,6 +109,21 @@
     [self sendSubviewToBack:self.revealedView];
 }
 
+- (void)addShadowViews
+{
+    if (self.horizontalShadowView == nil) {
+        self.horizontalShadowView = [self makeHorizontalShadowView];
+    }
+    self.horizontalShadowView.frame = (CGRect){ CGPointZero, self.revealedView.frame.size };
+    [self.revealedView addSubview:self.horizontalShadowView];
+
+    if (self.verticalShadowView == nil) {
+        self.verticalShadowView = [self makeVerticalShadowView];
+    }
+    self.verticalShadowView.frame = (CGRect){ CGPointZero, self.revealedView.frame.size };
+    [self.revealedView addSubview:self.verticalShadowView];
+}
+
 #pragma mark - Accessors
 - (void)setRevealing:(BOOL)revealing
 {
@@ -152,8 +169,12 @@
 
     _revealedView = revealedView;
 
+    revealedView.autoresizesSubviews = YES;
+
+    [self addShadowViews];
+
     [self addSubview:revealedView];
-    [self sendSubviewToBack:revealedView];
+    [self sendSubviewToBack:self.revealedView];
 }
 
 - (BOOL)_shouldReveal
@@ -187,6 +208,19 @@
     CGRect rect = self.backgroundView.frame;
     rect.origin.x = -dx;
     self.backgroundView.frame = rect;
+
+    rect = CGRectInset(self.revealedView.frame, 0, 0);
+    rect.origin.x = -dx;
+
+    // Let the vertical shadow stick out a bit on the appropriate side).
+    if (dx < 0) {
+        rect.origin.x -= 6;
+    }
+    else if (dx > 0) {
+        rect.origin.x += 6;
+    }
+
+    self.verticalShadowView.frame = rect;
 }
 
 #pragma mark - Handing Touch
@@ -453,6 +487,80 @@
 		return ((fabs(translation.x) / fabs(translation.y) > 1) ? YES : NO);
 	}
 	return NO;
+}
+
+#pragma mark - Shadow drawing
+- (UIColor *)shadowColor
+{
+    return [UIColor blackColor];
+}
+
+#define kShadowLineWidth 2
+#define kShadowRadius 5
+
+- (UIView *)makeHorizontalShadowView
+{
+    CGRect rect = CGRectMake(0, 0, 5, 17);
+
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+
+    // Draw a rect that is slightly larger than the target so the actual lines aren't included,
+    // just their shadows.
+    CGContextAddRect(ctx, CGRectMake(-kShadowLineWidth / 2 - 10, -kShadowLineWidth / 2,
+                                     rect.size.width + kShadowLineWidth + 2*10, rect.size.height + kShadowLineWidth / 2));
+
+    CGContextSetLineWidth(ctx, kShadowLineWidth);
+    CGContextSetStrokeColorWithColor(ctx, [[self shadowColor] CGColor]);
+    CGContextSetShadowWithColor(ctx, CGSizeZero, kShadowRadius, [[self shadowColor] CGColor]);
+    CGContextStrokePath(ctx);
+
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    CGFloat verticalInset = (rect.size.height - 1) / 2;
+    CGFloat horizontalInset = (rect.size.width - 1) / 2;
+    image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(verticalInset, horizontalInset, verticalInset, horizontalInset)];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+    return imageView;
+}
+
+- (UIView *)makeVerticalShadowView
+{
+    CGRect rect = CGRectMake(0, 0, 17, 5);
+
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
+
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+
+    // The width of one of the side shadows.
+    CGFloat shadowWidth = (rect.size.width - 1) / 2;
+
+    // Draw the actual lines just outside the target and only leave the shadows.
+    CGContextMoveToPoint(ctx, shadowWidth - kShadowLineWidth / 2, 0);
+    CGContextAddLineToPoint(ctx, shadowWidth - kShadowLineWidth / 2, rect.size.height);
+
+    CGContextMoveToPoint(ctx, rect.size.width - shadowWidth + kShadowLineWidth / 2, 0);
+    CGContextAddLineToPoint(ctx, rect.size.width - shadowWidth + kShadowLineWidth / 2, rect.size.height);
+
+    CGContextSetLineWidth(ctx, kShadowLineWidth);
+    CGContextSetStrokeColorWithColor(ctx, [[self shadowColor] CGColor]);
+    CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0), kShadowRadius, [[self shadowColor] CGColor]);
+    CGContextStrokePath(ctx);
+
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    CGFloat verticalInset = (rect.size.height - 1) / 2;
+    CGFloat horizontalInset = (rect.size.width - 1) / 2;
+    image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(verticalInset, horizontalInset, verticalInset, horizontalInset)];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    
+    return imageView;
 }
 
 @end
