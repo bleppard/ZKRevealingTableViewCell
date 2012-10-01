@@ -26,6 +26,7 @@
 
 #import "ZKRevealingTableViewCell.h"
 
+
 @interface ZKRevealingTableViewCell ()
 
 @property (nonatomic, strong) UIPanGestureRecognizer   *_panGesture;
@@ -35,7 +36,7 @@
 @property (nonatomic, assign) ZKRevealingTableViewCellDirection _currentDirection;
 @property (nonatomic, assign) UITableViewCellSelectionStyle originalSelectionStyle;
 
-- (void)_slideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction offsetMultiplier:(CGFloat)multiplier;
+- (void)_slideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction offsetMultiplier:(CGFloat)multiplier emitSnapBack:(BOOL)emitSnapBack;
 - (void)_slideOutContentViewInDirection:(ZKRevealingTableViewCellDirection)direction;
 
 - (void)_pan:(UIPanGestureRecognizer *)panGesture;
@@ -121,7 +122,7 @@
 	if (self.isRevealing) {
 		[self _slideOutContentViewInDirection:(self.isRevealing) ? self._currentDirection : self._lastDirection];
 	} else {
-		[self _slideInContentViewFromDirection:(self.isRevealing) ? self._currentDirection : self._lastDirection offsetMultiplier:self._bounceMultiplier];
+		[self _slideInContentViewFromDirection:(self.isRevealing) ? self._currentDirection : self._lastDirection offsetMultiplier:self._bounceMultiplier emitSnapBack:NO];
     }
 }
 
@@ -226,12 +227,13 @@
 		
 		if (self.pixelsToReveal != 0) {
 			// Let's not go waaay out of bounds
-			if (newCenterPosition > originalCenter + self.pixelsToReveal)
+            if (newCenterPosition >= originalCenter + self.pixelsToReveal) {
 				newCenterPosition = originalCenter + self.pixelsToReveal;
-			
-			else if (newCenterPosition < originalCenter - self.pixelsToReveal)
+            }
+            else if (newCenterPosition <= originalCenter - self.pixelsToReveal) {
 				newCenterPosition = originalCenter - self.pixelsToReveal;
-		}else {
+            }
+        } else {
 			// Let's not go waaay out of bounds
 			if (newCenterPosition > self.bounds.size.width + originalCenter)
 				newCenterPosition = self.bounds.size.width + originalCenter;
@@ -282,8 +284,8 @@
 			CGFloat multiplier = self._bounceMultiplier;
 			if (!self.isRevealing)
 				multiplier *= -1.0;
-				
-			[self _slideInContentViewFromDirection:self._currentDirection offsetMultiplier:multiplier];
+
+			[self _slideInContentViewFromDirection:self._currentDirection offsetMultiplier:multiplier emitSnapBack:YES];
 			[self _setRevealing:NO];
 			
 		} else if (translation.x != 0) {
@@ -291,8 +293,8 @@
 			ZKRevealingTableViewCellDirection finalDir = ZKRevealingTableViewCellDirectionRight;
 			if (translation.x < 0)
 				finalDir = ZKRevealingTableViewCellDirectionLeft;
-		
-			[self _slideInContentViewFromDirection:finalDir offsetMultiplier:-1.0 * self._bounceMultiplier];
+
+			[self _slideInContentViewFromDirection:finalDir offsetMultiplier:-1.0 * self._bounceMultiplier emitSnapBack:YES];
 			[self _setRevealing:NO];
 		}
 	}
@@ -321,13 +323,19 @@
 #pragma mark - Sliding
 #define kBOUNCE_DISTANCE 7.0
 
-- (void)_slideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction offsetMultiplier:(CGFloat)multiplier
+- (void)_slideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction offsetMultiplier:(CGFloat)multiplier emitSnapBack:(BOOL)emitSnapBack
 {
 	CGFloat bounceDistance;
 
 	if (self.contentView.center.x == self._originalCenter)
 		return;
-	
+
+    if (emitSnapBack) {
+        if ([self.delegate respondsToSelector:@selector(cellWillSnapBack:)]) {
+            [self.delegate cellWillSnapBack:self];
+        }
+    }
+
 	switch (direction) {
 		case ZKRevealingTableViewCellDirectionRight:
 			bounceDistance = kBOUNCE_DISTANCE * multiplier;
@@ -339,8 +347,7 @@
 			@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Unhandled gesture direction" userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:direction] forKey:@"direction"]];
 			break;
 	}
-	
-	
+
 	[UIView animateWithDuration:0.1
 						  delay:0 
 						options:UIViewAnimationOptionCurveEaseOut 
@@ -404,7 +411,15 @@
                          self.contentView.center = CGPointMake(x, self.contentView.center.y);
                          [self syncBackgroundViewWithContentView];
                      }
-					 completion:NULL];
+					 completion:^(BOOL finished) {
+                         if (self.shouldAutoSnapBack) {
+                             if ([self.delegate respondsToSelector:@selector(cellWillSnapBack:)]) {
+                                 [self.delegate cellWillSnapBack:self];
+                             }
+                             self.revealing = NO;
+                         }
+                     }
+     ];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
