@@ -40,6 +40,7 @@ typedef enum {
 @optional
 - (BOOL)cellShouldReveal:(ZKRevealingTableViewCell *)cell;
 - (void)cellDidBeginPan:(ZKRevealingTableViewCell *)cell;
+- (void)cellDidPan:(ZKRevealingTableViewCell *)cell;
 - (void)cellDidReveal:(ZKRevealingTableViewCell *)cell;
 - (void)cellWillSnapBack:(ZKRevealingTableViewCell *)cell;
 
@@ -54,5 +55,6 @@ typedef enum {
 @property (nonatomic, assign) BOOL shouldBounce;
 @property (nonatomic, assign) BOOL shouldAutoSnapBack;
 @property (nonatomic, assign) CGFloat pixelsToReveal;
+@property (nonatomic, assign, readonly) CGFloat pannedAmount;
 
 @end

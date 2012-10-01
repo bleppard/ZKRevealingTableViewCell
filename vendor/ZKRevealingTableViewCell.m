@@ -199,6 +199,20 @@
     [super prepareForReuse];
 }
 
+- (CGFloat)pannedAmount
+{
+    CGPoint center = self.contentView.center;
+    CGFloat dx = center.x - self._originalCenter;
+
+    CGFloat totalWidth = self.frame.size.width;
+    if (self.pixelsToReveal != 0) {
+        totalWidth = self.pixelsToReveal;
+    }
+
+    CGFloat amount = dx / totalWidth;
+    return MAX(MIN(amount, 1), -1);
+}
+
 #pragma mark - Handling the background view
 - (void)syncBackgroundViewWithContentView
 {
@@ -281,6 +295,10 @@
 
 		self.contentView.center = center;
         [self syncBackgroundViewWithContentView];
+
+        if ([self.delegate respondsToSelector:@selector(cellDidPan:)]) {
+            [self.delegate cellDidPan:self];
+        }
 
 	} else if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
 				
