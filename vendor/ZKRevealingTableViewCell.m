@@ -72,8 +72,6 @@
     self._panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_pan:)];
     self._panGesture.delegate = self;
 
-    self.originalSelectionStyle = self.selectionStyle;
-
     [self addGestureRecognizer:self._panGesture];
 }
 
@@ -165,9 +163,10 @@
 
 - (void)prepareForReuse
 {
-    self._lastDirection = ZKRevealingTableViewCellDirectionNone;
-    self._currentDirection = ZKRevealingTableViewCellDirectionNone;
-    self.selectionStyle = self.originalSelectionStyle;
+    if (self.isRevealing) {
+        self.selectionStyle = self.originalSelectionStyle;
+    }
+    _revealing = NO;
 
     [self sendSubviewToBack:self.revealedView];
 
@@ -372,18 +371,6 @@
 - (void)_slideOutContentViewInDirection:(ZKRevealingTableViewCellDirection)direction;
 {
 	CGFloat x;
-
-//	switch (direction) {
-//		case ZKRevealingTableViewCellDirectionLeft:
-//			x = - self._originalCenter;
-//			break;
-//		case ZKRevealingTableViewCellDirectionRight:
-//			x = self.contentView.frame.size.width + self._originalCenter;
-//			break;
-//		default:
-//			@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Unhandled gesture direction" userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:direction] forKey:@"direction"]];
-//			break;
-	
 	if (self.pixelsToReveal != 0) {
 		switch (direction) {
 			case ZKRevealingTableViewCellDirectionLeft:
