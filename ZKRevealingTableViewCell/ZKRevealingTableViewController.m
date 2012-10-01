@@ -66,7 +66,34 @@
 		return;
 	
 	[_currentlyRevealedCell setRevealing:NO];
+
+    UILabel *starLabel = (UILabel *)_currentlyRevealedCell.revealedView.subviews[0];
+    starLabel.textColor = [UIColor whiteColor];
+
 	_currentlyRevealedCell = currentlyRevealedCell;
+}
+
+- (UIView *)revealedView
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    view.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+    view.autoresizesSubviews = YES;
+
+    UILabel *starLabel = [[UILabel alloc] init];
+    starLabel.text = @"★";
+    starLabel.font = [UIFont boldSystemFontOfSize:30];
+    starLabel.textColor = [UIColor whiteColor];
+    starLabel.shadowColor = [UIColor blackColor];
+    starLabel.backgroundColor = [UIColor clearColor];
+
+    [starLabel sizeToFit];
+    CGRect rect = CGRectMake(4, 0, starLabel.frame.size.width, view.frame.size.height);
+    starLabel.frame = rect;
+    starLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+
+    [view addSubview:starLabel];
+
+    return view;
 }
 
 #pragma mark - ZKRevealingTableViewCellDelegate
@@ -88,6 +115,21 @@
 		self.currentlyRevealedCell = nil;
 }
 
+- (void)cellDidPan:(ZKRevealingTableViewCell *)cell
+{
+    UILabel *starLabel = (UILabel *)cell.revealedView.subviews[0];
+    if (cell.pannedAmount == 1) {
+        starLabel.textColor = [UIColor orangeColor];
+    } else {
+        starLabel.textColor = [UIColor whiteColor];
+    }
+}
+
+- (void)cellWillSnapBack:(ZKRevealingTableViewCell *)cell
+{
+    NSLog(@"Will snap back");
+    self.currentlyRevealedCell = nil;
+}
 
 #pragma mark - UIScrollViewDelegate
 
@@ -128,8 +170,7 @@
 
         cell.backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
 
-        cell.revealedView = [[UIView alloc] initWithFrame:CGRectZero];
-        cell.revealedView.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+        cell.revealedView = [self revealedView];
 
         cell.pixelsToReveal = 40;
 	}
@@ -150,7 +191,8 @@
             break;
     }
 	cell.shouldBounce   = (BOOL)!indexPath.section;
-	
+    cell.shouldAutoSnapBack = indexPath.section == 0;
+
 	return cell;
 	
 }
