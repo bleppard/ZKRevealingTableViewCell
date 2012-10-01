@@ -43,7 +43,6 @@
 	// Do any additional setup after loading the view, typically from a nib.
 	self.objects = [NSArray arrayWithObjects:@"Right", @"Left", @"Both", @"None", nil];
 	self.tableView = (UITableView *)self.view;
-    self.tableView.backgroundColor = [UIColor clearColor];
 	self.tableView.rowHeight      = 52.0f;
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
 }
@@ -164,8 +163,7 @@
 	} else {
 		cell.backgroundView.backgroundColor = [UIColor colorWithRed:0.892 green:0.893 blue:0.892 alpha:1.0];
 	}
-	
-//	cell.contentView.backgroundColor = cell.backgroundColor;
+	cell.textLabel.backgroundColor = cell.backgroundView.backgroundColor;
 }
 
 @end
