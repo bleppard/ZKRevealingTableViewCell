@@ -101,7 +101,7 @@
     rect.origin = CGPointZero;
     self.revealedView.frame = rect;
 
-    // Needed to get the revelead view behind the selected view. Can't be done in setSelected: since
+    // Needed to get the revealed view behind the selected view. Can't be done in setSelected: since
     // that is not called when the selection is briefly highlighted and the user starts scrolling.
     [self sendSubviewToBack:self.revealedView];
 }
