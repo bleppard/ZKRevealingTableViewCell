@@ -400,7 +400,10 @@
 	[UIView animateWithDuration:0.2 
 						  delay:0 
 						options:UIViewAnimationOptionCurveEaseOut 
-					 animations:^{ self.contentView.center = CGPointMake(x, self.contentView.center.y); }
+					 animations:^{
+                         self.contentView.center = CGPointMake(x, self.contentView.center.y);
+                         [self syncBackgroundViewWithContentView];
+                     }
 					 completion:NULL];
 }
 
