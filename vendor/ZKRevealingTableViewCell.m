@@ -33,6 +33,7 @@
 @property (nonatomic, assign) CGFloat _initialHorizontalCenter;
 @property (nonatomic, assign) ZKRevealingTableViewCellDirection _lastDirection;
 @property (nonatomic, assign) ZKRevealingTableViewCellDirection _currentDirection;
+@property (nonatomic, assign) UITableViewCellSelectionStyle originalSelectionStyle;
 
 - (void)_slideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction offsetMultiplier:(CGFloat)multiplier;
 - (void)_slideOutContentViewInDirection:(ZKRevealingTableViewCellDirection)direction;
@@ -71,6 +72,8 @@
     self._panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_pan:)];
     self._panGesture.delegate = self;
 
+    self.originalSelectionStyle = self.selectionStyle;
+
     [self addGestureRecognizer:self._panGesture];
 }
 
@@ -99,6 +102,10 @@
     CGRect rect = self.frame;
     rect.origin = CGPointZero;
     self.revealedView.frame = rect;
+
+    // Needed to get the revelead view behind the selected view. Can't be done in setSelected: since
+    // that is not called when the selection is briefly highlighted and the user starts scrolling.
+    [self sendSubviewToBack:self.revealedView];
 }
 
 #pragma mark - Accessors
@@ -112,7 +119,7 @@
     }
 	
 	[self _setRevealing:revealing];
-	
+
 	if (self.isRevealing) {
 		[self _slideOutContentViewInDirection:(self.isRevealing) ? self._currentDirection : self._lastDirection];
 	} else {
@@ -123,6 +130,16 @@
 - (void)_setRevealing:(BOOL)revealing
 {
     _revealing = revealing;
+
+    // Disable selection highlighting completely when revealing so the highlight doesn't interfer with
+    // our moving the background view (seletion also uses the background view). It also looks and feels
+    // better when you can't select the revealed row.
+    if (revealing) {
+        self.originalSelectionStyle = self.selectionStyle;
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+    } else {
+        self.selectionStyle = self.originalSelectionStyle;
+    }
 
 	if (self.isRevealing && [self.delegate respondsToSelector:@selector(cellDidReveal:)])
 		[self.delegate cellDidReveal:self];
@@ -138,8 +155,6 @@
 
     [self addSubview:revealedView];
     [self sendSubviewToBack:revealedView];
-
-    [self setNeedsLayout];
 }
 
 - (BOOL)_shouldReveal
@@ -148,9 +163,25 @@
 	return (![self.delegate respondsToSelector:@selector(cellShouldReveal:)] || [self.delegate cellShouldReveal:self]);
 }
 
+- (void)prepareForReuse
+{
+    self._lastDirection = ZKRevealingTableViewCellDirectionNone;
+    self._currentDirection = ZKRevealingTableViewCellDirectionNone;
+    self.selectionStyle = self.originalSelectionStyle;
+
+    [self sendSubviewToBack:self.revealedView];
+
+    CGRect rect = self.frame;
+    rect.origin = CGPointZero;
+    self.backgroundView.frame = rect;
+
+    [super prepareForReuse];
+}
+
 #pragma mark - Handling the background view
 - (void)syncBackgroundViewWithContentView
 {
+    // Line up the background view with the content view.
     CGPoint center = self.contentView.center;
     CGFloat dx = self._originalCenter - center.x;
     CGRect rect = self.backgroundView.frame;
