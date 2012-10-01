@@ -36,7 +36,6 @@
 @implementation ZKRevealingTableViewController
 
 @synthesize objects;
-@dynamic currentlyRevealedCell;
 
 - (void)viewDidLoad
 {
@@ -61,11 +60,6 @@
 }
 
 #pragma mark - Accessors
-
-- (ZKRevealingTableViewCell *)currentlyRevealedCell
-{
-	return _currentlyRevealedCell;
-}
 
 - (void)setCurrentlyRevealedCell:(ZKRevealingTableViewCell *)currentlyRevealedCell
 {
