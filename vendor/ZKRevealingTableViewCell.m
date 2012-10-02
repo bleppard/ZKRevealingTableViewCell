@@ -38,20 +38,6 @@
 @property (nonatomic, strong) UIView *horizontalShadowView;
 @property (nonatomic, strong) UIView *verticalShadowView;
 
-- (void)_slideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction offsetMultiplier:(CGFloat)multiplier emitSnapBack:(BOOL)emitSnapBack;
-- (void)_slideOutContentViewInDirection:(ZKRevealingTableViewCellDirection)direction;
-
-- (void)_pan:(UIPanGestureRecognizer *)panGesture;
-
-- (void)_setRevealing:(BOOL)revealing;
-
-- (CGFloat)_originalCenter;
-- (CGFloat)_bounceMultiplier;
-
-- (BOOL)_shouldDragLeft;
-- (BOOL)_shouldDragRight;
-- (BOOL)_shouldReveal;
-
 @end
 
 @implementation ZKRevealingTableViewCell
