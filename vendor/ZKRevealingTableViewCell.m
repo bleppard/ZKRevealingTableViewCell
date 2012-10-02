@@ -208,7 +208,7 @@
     self.verticalShadowView.frame = rect;
 }
 
-#pragma mark - Handing Touch
+#pragma mark - Handling Touch
 
 - (void)_pan:(UIPanGestureRecognizer *)recognizer
 {
