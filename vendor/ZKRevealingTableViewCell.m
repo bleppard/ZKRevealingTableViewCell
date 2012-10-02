@@ -95,21 +95,6 @@
     [self sendSubviewToBack:self.revealedView];
 }
 
-- (void)addShadowViews
-{
-    if (self.horizontalShadowView == nil) {
-        self.horizontalShadowView = [self makeHorizontalShadowView];
-    }
-    self.horizontalShadowView.frame = (CGRect){ CGPointZero, self.revealedView.frame.size };
-    [self.revealedView addSubview:self.horizontalShadowView];
-
-    if (self.verticalShadowView == nil) {
-        self.verticalShadowView = [self makeVerticalShadowView];
-    }
-    self.verticalShadowView.frame = (CGRect){ CGPointZero, self.revealedView.frame.size };
-    [self.revealedView addSubview:self.verticalShadowView];
-}
-
 #pragma mark - Accessors
 - (void)setRevealing:(BOOL)revealing
 {
@@ -493,7 +478,23 @@
 	return NO;
 }
 
-#pragma mark - Shadow drawing
+#pragma mark - Shadow drawing and view handling
+
+- (void)addShadowViews
+{
+    if (self.horizontalShadowView == nil) {
+        self.horizontalShadowView = [self makeHorizontalShadowView];
+    }
+    self.horizontalShadowView.frame = (CGRect){ CGPointZero, self.revealedView.frame.size };
+    [self.revealedView addSubview:self.horizontalShadowView];
+
+    if (self.verticalShadowView == nil) {
+        self.verticalShadowView = [self makeVerticalShadowView];
+    }
+    self.verticalShadowView.frame = (CGRect){ CGPointZero, self.revealedView.frame.size };
+    [self.revealedView addSubview:self.verticalShadowView];
+}
+
 - (UIColor *)shadowColor
 {
     return [UIColor blackColor];
